@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+# Replace with the absolute URL once the production domain is confirmed:
+# Sitemap: https://your-domain.com/sitemap.xml

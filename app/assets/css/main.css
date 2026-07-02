@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — all site-wide values live here.
+ * To update the palette or spacing scale, change these variables.
+ */
+:root {
+  /* Light surface tokens */
+  --color-background: #f7f7f4;
+  --color-surface:    #ffffff;
+  --color-foreground: #171717;
+  --color-muted:      #737373;
+  --color-border:     #d8d8d3;
+  --color-accent:     #171717;
+
+  /* Dark section tokens */
+  --color-dark:            #111111;
+  --color-dark-surface:    #1a1a1a;
+  --color-dark-foreground: #f5f5f2;
+  --color-dark-muted:      #a3a3a0;
+  --color-dark-border:     #2e2e2e;
+
+  /* Layout tokens */
+  --content-width:      80rem;
+  --content-width-wide: 96rem;
+  --page-padding-x:     1.5rem;
+  --section-spacing:    6rem;
+
+  /* Typography */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-padding-x: 3rem;
+    --section-spacing: 8rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --page-padding-x: 4rem;
+  }
+}
+
+/* Base reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Dark section: focus adapts to dark bg */
+.section--dark :focus-visible {
+  outline-color: var(--color-dark-foreground);
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+.container--wide {
+  max-width: var(--content-width-wide);
+}
+
+/* Section spacing */
+.section {
+  padding-block: var(--section-spacing);
+}
+
+/* Dark section variant */
+.section--dark {
+  background-color: var(--color-dark);
+  color: var(--color-dark-foreground);
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.divider--dark {
+  border-top-color: var(--color-dark-border);
+}
+
+/* Screen-reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
