@@ -9,13 +9,91 @@
       <div class="hero__scrim" />
     </div>
 
-    <!-- Geometric accents: registration-style corner marks + a partial circle,
-         referencing surveying/technical-drawing precision. Static, no motion. -->
+    <!-- Decorative geometry: a large-scale golden-ratio / Fibonacci
+         construction bleeding off the right edge of the hero, plus a few
+         faint full-bleed drafting guide lines, evoking architectural
+         construction lines rather than a standalone diagram. Registration
+         corner marks (technical-drawing crop marks) complete the set. A
+         soft bright segment travels slowly along the spiral and the corner
+         paths, like a pen tracing linework — the only motion cue, kept
+         quiet so it never competes with the content. -->
     <div class="hero__lines" aria-hidden="true">
-      <span class="hero__corner hero__corner--tl" />
-      <span class="hero__corner hero__corner--br" />
-      <svg class="hero__circle" viewBox="0 0 400 400" fill="none">
-        <circle cx="200" cy="200" r="199" stroke="currentColor" stroke-width="1" />
+      <svg class="hero__corner hero__corner--tl" viewBox="0 0 28 28" fill="none">
+        <path d="M28 0H0V28" stroke="currentColor" stroke-width="1" opacity="0.25" />
+        <path class="hero__corner-travel" d="M28 0H0V28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      <svg class="hero__corner hero__corner--br" viewBox="0 0 28 28" fill="none">
+        <path d="M0 28H28V0" stroke="currentColor" stroke-width="1" opacity="0.25" />
+        <path class="hero__corner-travel" d="M0 28H28V0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+
+      <!-- Faint full-bleed drafting guides: two golden-section verticals,
+           one golden-section horizontal, one soft diagonal — background
+           structure spanning the whole hero, independent of the box below. -->
+      <svg class="hero__grid" viewBox="0 0 1600 900" preserveAspectRatio="none">
+        <line x1="989" y1="0" x2="989" y2="900" />
+        <line x1="611" y1="0" x2="611" y2="900" />
+        <line x1="0" y1="344" x2="1600" y2="344" />
+        <line class="hero__grid-diagonal" x1="240" y1="900" x2="1200" y2="0" />
+      </svg>
+
+      <!--
+        Golden-ratio (whirling-squares) construction, viewBox units, φ ≈ 1.618.
+        Squares of side s1..s7, each ≈ previous / φ (s1=200, s2=123.6068,
+        s3=76.3932, s4=47.2136, s5=29.1796, s6=18.034, s7=11.1456 — note
+        s_n = s_(n+1) + s_(n+2), the defining Fibonacci-style property).
+        The spiral is ONE continuous path of 7 quarter-circle arcs, each
+        centred on a corner of its square that lies on the shared edge with
+        the previous square — this is what guarantees every arc is exactly
+        tangent (C¹-continuous) to the next at their shared point, so the
+        curve is mathematically smooth with no kinks. The circle
+        circumscribes the largest square (s1), tying it into the same
+        system as the construction's anchor shape.
+      -->
+      <svg class="hero__geometry" viewBox="0 0 324 200" fill="none">
+        <defs>
+          <path
+            id="hero-fib-spiral"
+            d="M323.6068 0
+               A200 200 0 0 1 123.6068 200
+               A123.6068 123.6068 0 0 1 0 76.3932
+               A76.3932 76.3932 0 0 1 76.3932 0
+               A47.2136 47.2136 0 0 1 123.6068 47.2136
+               A29.1796 29.1796 0 0 1 94.4272 76.3932
+               A18.034 18.034 0 0 1 76.3932 58.3592
+               A11.1456 11.1456 0 0 1 87.5388 47.2136"
+          />
+          <!--
+            Clearance mask: keeps the background (guide rectangles + circle)
+            visible everywhere except in a channel following the spiral's
+            exact path, slightly wider than its stroke. This is what
+            guarantees the square/guide lines can never cover, clip, or eat
+            into the spiral at the points where it is tangent to them — a
+            precise, deliberate layering technique, not a visual patch.
+          -->
+          <mask id="hero-fib-declutter" maskUnits="userSpaceOnUse" x="-150" y="-150" width="650" height="500">
+            <rect x="-150" y="-150" width="650" height="500" fill="#fff" />
+            <use href="#hero-fib-spiral" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          </mask>
+        </defs>
+
+        <circle class="hero__geo-circle" cx="223.6068" cy="100" r="141.4214" stroke="currentColor" mask="url(#hero-fib-declutter)" />
+
+        <g class="hero__geo-detail" stroke="currentColor" mask="url(#hero-fib-declutter)">
+          <!-- nested Fibonacci squares (s1–s4) -->
+          <rect x="123.6068" y="0" width="200" height="200" />
+          <rect x="0" y="76.3932" width="123.6068" height="123.6068" />
+          <rect x="0" y="0" width="76.3932" height="76.3932" />
+          <rect x="76.3932" y="0" width="47.2136" height="47.2136" />
+          <!-- construction lines, extended further toward the hero centre -->
+          <line x1="123.6068" y1="-40" x2="123.6068" y2="240" />
+          <line x1="-40" y1="76.3932" x2="364" y2="76.3932" />
+          <!-- proportion triangle, inscribed in the smallest guide square -->
+          <path d="M76.3932 47.2136L123.6068 47.2136L123.6068 0Z" />
+        </g>
+
+        <use href="#hero-fib-spiral" class="hero__geo-spiral-base" stroke="currentColor" />
+        <use href="#hero-fib-spiral" class="hero__geo-spiral-travel" stroke="currentColor" />
       </svg>
     </div>
 
@@ -83,24 +161,6 @@
   position: absolute;
   width: 1.75rem;
   height: 1.75rem;
-  opacity: 0.4;
-}
-
-.hero__corner::before,
-.hero__corner::after {
-  content: '';
-  position: absolute;
-  background: currentColor;
-}
-
-.hero__corner::before {
-  width: 100%;
-  height: 1px;
-}
-
-.hero__corner::after {
-  width: 1px;
-  height: 100%;
 }
 
 .hero__corner--tl {
@@ -108,46 +168,128 @@
   left: var(--page-padding-x);
 }
 
-.hero__corner--tl::before {
-  top: 0;
-  left: 0;
-}
-
-.hero__corner--tl::after {
-  top: 0;
-  left: 0;
-}
-
 .hero__corner--br {
   bottom: 4.5rem;
   right: var(--page-padding-x);
 }
 
-.hero__corner--br::before {
-  bottom: 0;
-  right: 0;
+/* Bright segment (14 = visible length, 42 = gap) travels the full 56px
+   perimeter of each corner path in a continuous, slow loop. */
+.hero__corner-travel {
+  stroke-dasharray: 14 42;
+  animation: corner-travel 5s linear infinite;
 }
 
-.hero__corner--br::after {
-  bottom: 0;
-  right: 0;
+@keyframes corner-travel {
+  to {
+    stroke-dashoffset: -56;
+  }
 }
 
-.hero__circle {
+.hero__geometry {
   position: absolute;
   top: 50%;
-  right: -8rem;
-  width: 24rem;
-  height: 24rem;
+  right: -15rem;
+  width: 50rem;
+  aspect-ratio: 324 / 200;
   transform: translateY(-50%);
-  opacity: 0.18;
 }
 
-@media (max-width: 1023px) {
-  .hero__circle {
-    right: -12rem;
+/* Full-bleed faint drafting guides, independent of the Fibonacci box. */
+.hero__grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__grid line {
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.06;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Circle circumscribing the largest square — a faint construction guide,
+   kept subordinate to the spiral. Its circumference passes exactly through
+   the square's corners (by construction), which is expected and correct;
+   the clearance mask (applied above) keeps the spiral fully intact there. */
+.hero__geo-circle {
+  fill: none;
+  stroke-width: 0.5;
+  opacity: 0.08;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Static construction layer: nested Fibonacci squares, their extended
+   guide lines and the proportion triangle — sharp, architectural corners. */
+.hero__geo-detail {
+  fill: none;
+  stroke-width: 0.5;
+  opacity: 0.07;
+}
+
+.hero__geo-detail rect,
+.hero__geo-detail line,
+.hero__geo-detail path {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Base spiral — a faint, continuous thread the highlight follows. Rendered
+   last, on top of the circle and squares, with a round cap on its own two
+   open ends so the curve's start (exactly at a square's corner) reads as a
+   clean, unbroken tip. Kept only slightly more legible than the guide
+   lines — still clearly secondary to the hero content. */
+.hero__geo-spiral-base {
+  fill: none;
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  opacity: 0.16;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Short, understated bright segment (40 = visible length) travels the
+   ≈794.15 unit length of the spiral (sum of its 7 tangent quarter-circle
+   arcs) in one slow, continuous 16s loop — no acceleration, no glow. */
+.hero__geo-spiral-travel {
+  fill: none;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  stroke-dasharray: 40 754.15;
+  vector-effect: non-scaling-stroke;
+  animation: geo-spiral-travel 16s linear infinite;
+}
+
+@keyframes geo-spiral-travel {
+  to {
+    stroke-dashoffset: -794.15;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero__geometry {
+    right: -9rem;
+    width: 32rem;
+  }
+
+  .hero__grid-diagonal {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero__geometry {
+    right: -8rem;
     width: 18rem;
-    height: 18rem;
+  }
+
+  /* Simplify on mobile: keep only the traveling spiral (and the corner
+     marks, handled separately) — drop the grid, rectangles, guides,
+     triangle and circle so the geometry doesn't turn into visual noise. */
+  .hero__grid,
+  .hero__geo-detail,
+  .hero__geo-circle {
+    display: none;
   }
 }
 
@@ -254,6 +396,11 @@
   .hero__scroll-line::after {
     animation: none;
     top: 0;
+  }
+
+  .hero__corner-travel,
+  .hero__geo-spiral-travel {
+    animation: none;
   }
 }
 
