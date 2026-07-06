@@ -22,10 +22,38 @@ function closeMenu() {
 
 const route = useRoute()
 watch(() => route.path, closeMenu)
+
+// Glass state: the navbar becomes a translucent surface once the page has
+// scrolled past a small threshold. Client-only, passive, and batched via
+// requestAnimationFrame to avoid layout thrashing on scroll.
+const SCROLL_THRESHOLD = 8
+const isScrolled = ref(false)
+let ticking = false
+
+function updateScrolled() {
+  isScrolled.value = window.scrollY > SCROLL_THRESHOLD
+  ticking = false
+}
+
+function handleScroll() {
+  if (!ticking) {
+    ticking = true
+    requestAnimationFrame(updateScrolled)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  updateScrolled()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
-  <header class="site-header" role="banner">
+  <header class="site-header" :class="{ 'site-header--scrolled': isScrolled }" role="banner">
     <div class="container">
       <nav class="site-nav" aria-label="Navegación principal">
         <NuxtLink to="/" class="site-logo" aria-label="César Barón — Inicio">
@@ -59,6 +87,7 @@ watch(() => route.path, closeMenu)
       id="mobile-navigation"
       :items="navItems"
       :open="mobileMenuOpen"
+      :scrolled="isScrolled"
       @close="closeMenu"
     />
   </header>
@@ -71,6 +100,27 @@ watch(() => route.path, closeMenu)
   z-index: 50;
   background-color: var(--color-background);
   border-bottom: 1px solid var(--color-border);
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    backdrop-filter 300ms ease;
+}
+
+/* Glass state: once scrolled, the solid surface becomes a thin translucent
+   sheet. Fallback (no backdrop-filter support) keeps a slightly more
+   opaque, still-neutral surface so the header reads as intentional even
+   without blur. */
+.site-header--scrolled {
+  background-color: color-mix(in srgb, var(--color-background) 88%, transparent);
+  border-bottom-color: var(--color-header-glass-border);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .site-header--scrolled {
+    background-color: var(--color-header-glass);
+    backdrop-filter: blur(12px) saturate(1.05);
+    -webkit-backdrop-filter: blur(12px) saturate(1.05);
+  }
 }
 
 .site-nav {

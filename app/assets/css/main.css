@@ -20,6 +20,12 @@
   --color-dark-muted:      #a3a3a0;
   --color-dark-border:     #2e2e2e;
 
+  /* Header glass-state tokens — derived from the light surface tokens
+     above, not new colors, so the scrolled navbar stays in the same
+     palette as the rest of the site. */
+  --color-header-glass:        color-mix(in srgb, var(--color-background) 72%, transparent);
+  --color-header-glass-border: color-mix(in srgb, var(--color-border) 70%, transparent);
+
   /* Layout tokens */
   --content-width:      80rem;
   --content-width-wide: 96rem;

@@ -8,6 +8,7 @@ const props = defineProps<{
   id: string
   items: NavItem[]
   open: boolean
+  scrolled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -24,7 +25,7 @@ function handleKeydown(event: KeyboardEvent) {
 <template>
   <div
     :id="props.id"
-    :class="['mobile-nav', { 'mobile-nav--open': props.open }]"
+    :class="['mobile-nav', { 'mobile-nav--open': props.open, 'mobile-nav--scrolled': props.scrolled }]"
     role="navigation"
     aria-label="Menú móvil"
     @keydown="handleKeydown"
@@ -49,10 +50,29 @@ function handleKeydown(event: KeyboardEvent) {
   display: none;
   background-color: var(--color-background);
   border-bottom: 1px solid var(--color-border);
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    backdrop-filter 300ms ease;
 }
 
 .mobile-nav--open {
   display: block;
+}
+
+/* Same material system as the header's glass state, but kept more opaque:
+   readability takes priority over transparency once the menu is open. */
+.mobile-nav--scrolled {
+  background-color: color-mix(in srgb, var(--color-background) 92%, transparent);
+  border-bottom-color: var(--color-header-glass-border);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .mobile-nav--scrolled {
+    background-color: color-mix(in srgb, var(--color-background) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
 }
 
 @media (min-width: 1024px) {
